@@ -3,7 +3,7 @@ __author__ = 'zenith'
 
 import smtplib
 
-from PythonModels.Email import MIMEText
+from PythonSkills.Email import MIMEText
 
 sender = "wzhwei_test@sina.com"
 reciever = "wzhwei@126.com"

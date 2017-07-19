@@ -8,7 +8,7 @@ Created by hushiwei on 16-12-19.
 #==========================================
 import smtplib
 
-from PythonModels.Email import MIMEText
+from PythonSkills.Email import MIMEText
 
 #==========================================
 # 要发给谁，这里可以是多个人，写在列表里即可

@@ -3,7 +3,7 @@ __author__ = 'zenith'
 import smtplib
 import sys
 
-from PythonModels.Email import MIMEText
+from PythonSkills.Email import MIMEText
 
 content=sys.argv[1]
 sender = 'wzhwei_test@sina.com'
