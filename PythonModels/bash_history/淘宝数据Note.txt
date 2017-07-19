@@ -1,0 +1,75 @@
+分类数据 准备1000个分类
+女装男装	女士上装	毛呢外套
+女装男装	女士裤子	牛仔裤
+女装男装	当季男装	长袖衬衫
+
+每个分类取10页---->1000X24=24万条
+分类 店铺 商品信息	
+
+交易流水  700万条
+
+
+表一:店铺基础信息
+
+CREATE TABLE IF NOT EXISTS store_base_info (
+	store_id STRING COMMENT '店铺ID',
+	store_name STRING COMMENT '店铺名',
+	is_tmall TINYINT COMMENT '1:天猫,0:淘宝',
+	location_city STRING COMMENT '所在地区'
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+STORED AS INPUTFORMAT
+'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+'org.apache.hadoop.hive.ql.io.RCFileOutputFormat';
+
+表二:店铺信用,服务信息
+
+CREATE TABLE IF NOT EXISTS store_credit_info (
+	store_id STRING COMMENT '店铺ID',
+	credit_as_seller INT COMMENT '卖家信用',
+	score_goods_desc INT COMMENT '淘宝与描述相符',
+	score_service_manner INT COMMENT '卖家的服务态度',
+	score_express_speed INT COMMENT '卖家的发货速度',
+	info_update_date DATE COMMENT '信息最后更新日期'
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+STORED AS INPUTFORMAT
+'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+'org.apache.hadoop.hive.ql.io.RCFileOutputFormat';
+
+表三:商品基本信息,包含尽可能全的商品
+
+CREATE TABLE IF NOT EXISTS goods_base_info (
+	goods_id STRING COMMENT '商品ID',
+	goods_name STRING COMMENT '商品名',
+	store_id STRING COMMENT '商铺ID',
+	class_one STRING COMMENT '一级分类',
+	class_two STRING COMMENT '二级分类',
+	class_three STRING COMMENT '三级分类',
+	info_acquire_date DATE COMMENT '信息获取时间',
+	date_added DATE COMMENT '上架时间'
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+STORED AS INPUTFORMAT
+'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+'org.apache.hadoop.hive.ql.io.RCFileOutputFormat';
+
+表四:交易流水
+
+CREATE TABLE IF NOT EXISTS goods_sale_info (
+	goods_id STRING COMMENT '商品ID',
+	data_date DATE COMMENT '数据日期',
+	price INT COMMENT '价格x10',
+	day_sale_count_total INT COMMENT '当天总销量(分下面3类)'
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+STORED AS INPUTFORMAT
+'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+'org.apache.hadoop.hive.ql.io.RCFileOutputFormat';
+
+导入数据:
+LOAD DATE LOCAL INPATH '/home/devel/hsw/data/store_base_info.txt' OVERWRITE INTO TABLE store_base_info;
