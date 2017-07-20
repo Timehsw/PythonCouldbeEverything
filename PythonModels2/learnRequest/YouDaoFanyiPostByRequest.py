@@ -3,8 +3,7 @@
     Created by hushiwei on 2017/7/20.
 '''
 
-import urllib
-import urllib2
+import requests
 import json
 import time
 import random
@@ -41,7 +40,7 @@ formdata = {
 
 
 
-header = {
+headers = {
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "X-Requested-With": "XMLHttpRequest",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
@@ -52,11 +51,12 @@ header = {
 }
 
 
-data = urllib.urlencode(formdata)
 
 url = "http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule&sessionFrom=null"
 
-request = urllib2.Request(url=url, data=data, headers=header)
-response = urllib2.urlopen(request)
-wordC = response.read()
-getWord(wordC)
+
+response=requests.post(url,data=formdata,headers=headers)
+
+content= response.text
+
+getWord(content)
