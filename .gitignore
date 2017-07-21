@@ -58,3 +58,4 @@ project/project
 # Intellij
 .idea
 *.iml
+*.txt
