@@ -39,3 +39,8 @@ print soup.p.attrs
 
 print soup.p['class'] # soup.p.get('class')
 # ['title'] #还可以利用get方法，传入属性的名称，二者是等价的
+
+print soup.select('a[id="link3"]')[0].get_text()
+
+print soup.head.title.get_text()
+print soup.head.title.string
