@@ -16,7 +16,8 @@ import urllib
 
 keyword='三国演义'
 
-word={"wd":keyword}
+word={
+    "wd":keyword}
 
 # 编码
 search_word=urllib.urlencode(word)

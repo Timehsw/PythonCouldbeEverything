@@ -57,7 +57,7 @@ if __name__ == '__main__':
     main()
 
 '''
-ocalhost:learnOptparse hushiwei$ python basic01.py -uroot -p3306 -fdemo.txt hello world
+ocalhost:learnOptparse hushiwei$ python match.py -uroot -p3306 -fdemo.txt hello world
 OPTIONS:  {'filename': 'demo.txt', 'verbose': None, 'port': 3306, 'user': 'root'}
 ARGS:  ['hello', 'world']
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
