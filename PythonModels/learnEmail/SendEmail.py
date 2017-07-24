@@ -8,7 +8,7 @@ Created by hushiwei on 16-12-19.
 #==========================================
 import smtplib
 
-from PythonSkills.Email import MIMEText
+from email.mime.text import MIMEText
 
 #==========================================
 # 要发给谁，这里可以是多个人，写在列表里即可
@@ -25,7 +25,7 @@ mail_postfix="qq.com"
 # 发送邮件
 #==========================================
 def send_mail(to_list,sub,content):
-    '''''
+    '''
     to_list:发给谁
     sub:主题
     content:内容
