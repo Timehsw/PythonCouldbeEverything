@@ -16,7 +16,8 @@ def run_it(cmd):
     return out
 
 
-out = run_it("ls -lh ")
+out = run_it('curl --compressed -H "Accept: application/json" -X GET "http://master:8088/ws/v1/cluster/apps?states=RUNNING"')
+
 arr = out.split("\n")
 for line in arr:
     print line

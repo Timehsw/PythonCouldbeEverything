@@ -54,25 +54,25 @@ def collectPackageName(str):
     return packages
 
 
-def findPackage(packageName, packages):
+def findPackage(packageNames, packages):
     '''
     根据包名判断该程序是否正在运行中,
     若失败了,则执行重启任务的脚本
-    :param packageName:
-    :param packages:
+    :param packageNames: 需要监控的包名们(list,可以监控多个包)
+    :param packages: yarn上正在执行的所有任务
     :return:
     '''
-
-    if packageName in packages.keys():
-        print packageName + " is: " + packages[packageName]
-    else:
-        print packageName + " is failed! "
-        runSparkStreaming(packageName)
+    for packageName in packageNames:
+        if packageName in packages.keys():
+            print packageName + " is: " + packages[packageName]
+        else:
+            print packageName + " is failed! "
+            runSparkStreaming(packageName)
 
 
 str = run_it(
     'curl --compressed -H "Accept: application/json" -X GET "http://master:8088/ws/v1/cluster/apps?states=RUNNING"')
 packages = collectPackageName(str)
 
-packageName = 'com.huanju.streaming.DSPStreaming'
-findPackage(packageName, packages)
+packageNames = ['com.huanju.streaming.DSPStreaming','com.huanju.streaming.CPDAppStreaming','com.huanju.streaming.ADXStreaming']
+findPackage(packageNames, packages)

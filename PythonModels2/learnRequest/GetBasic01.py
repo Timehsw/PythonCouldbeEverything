@@ -7,7 +7,7 @@ import requests
 
 # get请求
 
-url="http://www.baidu.com/"
+url="http://master:8088/cluster/apps/RUNNING"
 response=requests.get(url)
 
 # 也可以这样写
