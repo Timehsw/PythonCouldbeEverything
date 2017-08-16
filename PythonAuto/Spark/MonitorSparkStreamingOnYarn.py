@@ -17,7 +17,7 @@ mailto_list=["hsw_v5@163.com","hushiwei@gm825.com"]
 #==========================================
 mail_host="smtp.qq.com"
 mail_user="694244330"
-mail_pass="rvmksizwstukbfhh"
+mail_pass="rvmkssfsdizwsxxtukdgdbfhh"
 mail_postfix="qq.com"
 #==========================================
 apps = {
