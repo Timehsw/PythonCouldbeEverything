@@ -7,13 +7,48 @@
 '''
 import json
 import subprocess
+import smtplib
+from email.mime.text import MIMEText
 
+
+mailto_list=["hsw_v5@163.com","hushiwei@gm825.com"]
+#==========================================
+# 设置服务器，用户名、口令以及邮箱的后缀。这里qq的邮箱密码，必须得是秘钥，得通过验证后才能获取。具体看QQ邮箱的
+#==========================================
+mail_host="smtp.qq.com"
+mail_user="694244330"
+mail_pass="rvmksizwstukbfhh"
+mail_postfix="qq.com"
+#==========================================
 apps = {
     "com.huanju.streaming.ADXStreaming": "sh ./start_adx_streaming_yarn.sh",
     "com.huanju.streaming.DSPStreaming": "sh ./start_dsp_streaming_yarn.sh",
     "com.huanju.streaming.CPDAppStreaming": "sh ./start_dsp_app_promotion_yarn.sh"
 }
 
+def send_mail(to_list,sub,content):
+    '''
+    to_list:发给谁
+    sub:主题
+    content:内容
+    send_mail("aaa@126.com","sub","content")
+    '''
+    me="Python Send Email"+"<"+mail_user+"@"+mail_postfix+">"
+    msg = MIMEText(content)
+    msg['Subject'] = sub
+    msg['From'] = me
+    msg['To'] = ";".join(to_list)
+    try:
+        # s = smtplib.SMTP()
+        s = smtplib.SMTP_SSL(mail_host,465)
+        s.connect(mail_host)
+        s.login(mail_user,mail_pass)
+        s.sendmail(me, to_list, msg.as_string())
+        s.close()
+        return True
+    except Exception, e:
+        print str(e)
+        return False
 
 def run_it(cmd):
     '''
@@ -36,7 +71,7 @@ def runSparkStreaming(packageName):
     :return:
     '''
     print "going to exec sparkstreaming program : %s" % packageName
-    run_it(apps[packageName])
+    # run_it(apps[packageName])
 
 
 def collectPackageName(str):
@@ -70,9 +105,16 @@ def findPackage(packageNames, packages):
             runSparkStreaming(packageName)
 
 
-str = run_it(
-    'curl --compressed -H "Accept: application/json" -X GET "http://master:8088/ws/v1/cluster/apps?states=RUNNING"')
-packages = collectPackageName(str)
+try:
+    str = run_it(
+        'curl --compressed -H "Accept: application/json" -X GET "http://master:8088/ws/v1/cluster/apps?states=RUNNING"')
 
-packageNames = ['com.huanju.streaming.DSPStreaming','com.huanju.streaming.CPDAppStreaming','com.huanju.streaming.ADXStreaming']
-findPackage(packageNames, packages)
+    packages = collectPackageName(str)
+
+    packageNames = ['com.huanju.streaming.DSPStreaming', 'com.huanju.streaming.CPDAppStreaming',
+                    'com.huanju.streaming.ADXStreaming']
+    findPackage(packageNames, packages)
+
+except Exception, e:
+    send_mail(mailto_list, "SparkStreaming App Is Error", "Error Information : %s" % e)
+

@@ -13,13 +13,13 @@ from email.mime.text import MIMEText
 #==========================================
 # 要发给谁，这里可以是多个人，写在列表里即可
 #==========================================
-mailto_list=["hsw_v5@163.com"]
+mailto_list=["hsw_v5@163.com","hushiwei@gm825.com"]
 #==========================================
 # 设置服务器，用户名、口令以及邮箱的后缀。这里qq的邮箱密码，必须得是秘钥，得通过验证后才能获取。具体看QQ邮箱的
 #==========================================
 mail_host="smtp.qq.com"
 mail_user="694244330"
-mail_pass="tdjzzgfdiwgobehh"
+mail_pass="rvmksizwstukbfhh"
 mail_postfix="qq.com"
 #==========================================
 # 发送邮件
