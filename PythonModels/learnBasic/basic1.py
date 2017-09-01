@@ -15,4 +15,9 @@ for obj in objs:
 
 
 
+
+print json.dumps(result)
+print json.dumps(result)
+print json.dumps(result)
+
 print json.dumps(result)

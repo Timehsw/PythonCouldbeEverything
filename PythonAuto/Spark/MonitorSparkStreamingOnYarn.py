@@ -76,7 +76,7 @@ def runSparkStreaming(packageName):
 
 def collectPackageName(str):
     '''
-    获取正则运行的所有包名
+    获取正在运行的所有包名
     :param str:
     :return:
     '''
