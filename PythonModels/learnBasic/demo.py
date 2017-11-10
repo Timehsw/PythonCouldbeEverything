@@ -1,6 +1,5 @@
 
+svn_path = "svn://svn.gm825.com/code/server/bigdata/dmp/dmp_aggregated_data/branches/master"
 
-print "hello world"
-
-for i in range(10):
-    print i,"hello world"
+arr=svn_path.split("/")[-1]
+print arr
