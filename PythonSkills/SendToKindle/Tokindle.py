@@ -6,7 +6,7 @@
     2.用smtplib给kindle发邮件
     3.书籍既是附件
 
-    后台执行: nohup python Tokindle.py > server.log 2>&1 &
+    后台执行: nohup python Tokindle.py /Users/hushiwei/DailyKindleEBookLib > server.log 2>&1 &
 '''
 
 import sys, time, logging
