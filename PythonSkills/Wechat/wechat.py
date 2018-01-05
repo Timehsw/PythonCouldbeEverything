@@ -7,62 +7,79 @@ import warnings
 import sys
 import time
 import urllib, urllib2
+import logging
 
 
-def gettoken(corpid, corpsecret, tokenpath):
-    # print corpid
-    Url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s' % (corpid, corpsecret)
-    req = urllib2.Request(Url)
-    result = urllib2.urlopen(req)
-    json_access_token = json.loads(result.read())
-    access_token=json_access_token['access_token']
-    print "get methods ---> access_token:%s"%access_token
+class WeChat(object):
+    def __init__(self, corpid, corpsecret, tokenpath):
+        self.corpid = corpid
+        self.corpsecret = corpsecret
+        self.tokenpath = tokenpath
+        self.logger = logging.getLogger('wechat')
 
-    with open(tokenpath, 'w') as f:
-        f.write(access_token)
-    return access_token
+    def saveToken(self):
+        '''
+        :return:
+        '''
+        try:
+            with open(self.tokenpath, 'r') as f:
+                token = f.read()
+                if len(token) < 10:
+                    token = self.getToken()
+                    self.logger.info("Can not get token from %s,prepare to get token on api which token is %s" % (
+                    self.tokenpath, token))
+                    return token
+                else:
+                    return token
+        except IOError:
+            token = self.getToken()
+            self.logger.info(
+                "Can not get token from %s,prepare to get token on api which token is %s" % (self.tokenpath, token))
+            return token
 
+    def getToken(self):
+        Url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s' % (self.corpid, self.corpsecret)
+        req = urllib2.Request(Url)
+        result = urllib2.urlopen(req)
+        json_access_token = json.loads(result.read())
+        access_token = json_access_token['access_token']
 
-def sendmessage(Userid, Text, token):
-    submiturl = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}'.format(token)
-    data = {"touser": Userid, "msgtype": "text", "agentid": "1000002", "text": {"content": Text}, "safe": "0"}
-    data = json.dumps(data, ensure_ascii=False)
+        with open(self.tokenpath, 'w') as f:
+            f.write(access_token)
+        return access_token
 
-    send_request = urllib2.Request(submiturl, data)
+    def setMessage(self, wechatids, text):
+        token = self.saveToken()
+        message = self.content(text)
+        submiturl = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}'.format(token)
+        data = {"touser": wechatids, "msgtype": "text", "agentid": "1000002", "text": {"content": message}, "safe": "0"}
+        data = json.dumps(data, ensure_ascii=False)
 
-    response = json.loads(urllib2.urlopen(send_request).read())
-    print response
+        send_request = urllib2.Request(submiturl, data)
 
-    if response['errcode'] == 42001 or response['errcode'] == 40014:
-        token = gettoken('xxxxxx', 'xxxxxxxxxxxxxxxxxx', '/tmp/token.txt')
-        sendmessage(Userid, Text, token)
+        self.logger.info("Send wechat %s" % text)
 
+        response = json.loads(urllib2.urlopen(send_request).read())
 
-def readtoken(corpid, corpsecre, tokenpath):
-    try:
-        with open(tokenpath, 'r') as f:
-            token = f.read()
-            if len(token)<10:
-                token = gettoken(corpid, corpsecre, tokenpath)
-                return token
-            else:
-                return token
-    except IOError:
-        token = gettoken(corpid, corpsecre, tokenpath)
-        return token
+        if response['errcode'] == 42001 or response['errcode'] == 40014:
+            token = self.getToken()
+            self.setMessage(wechatids, message, token)
 
+    def content(self, content):
+        def date():
+            date = time.strftime('%m-%d %H:%M:%S', time.localtime())
+            return date
 
-def date():
-    date = time.strftime('%m-%d %H:%M:%S', time.localtime())
-    return date
+        return "%s \nCall Time:%s" % (content, date())
 
 
 if __name__ == '__main__':
-    warnings.filterwarnings('ignore')
-    token = readtoken('xxxxxxxx', 'xxxxxxxxxxxxxxxxxxx', '/tmp/token.txt')
-    userid = sys.argv[1]
-    text = sys.argv[2] + '\nCall Time:' + date()
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s - %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
 
-    print "argv-->"+str(userid)+"-->"+str(text)
+    wechatClient = WeChat('xxxxx', 'xxxxxxxxxxxxxxxxxx', '/tmp/token.txt')
+    userid = "HuShiWei"
+    text = "123456777"
 
-    sendmessage(str(userid), str(text), token)
+    wechatClient.setMessage(userid, text)
