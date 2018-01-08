@@ -8,6 +8,7 @@ import sys
 import time
 import urllib, urllib2
 import logging
+import os
 
 
 class WeChat(object):
@@ -27,7 +28,7 @@ class WeChat(object):
                 if len(token) < 10:
                     token = self.getToken()
                     self.logger.info("Can not get token from %s,prepare to get token on api which token is %s" % (
-                    self.tokenpath, token))
+                        self.tokenpath, token))
                     return token
                 else:
                     return token
@@ -50,7 +51,7 @@ class WeChat(object):
 
     def setMessage(self, wechatids, text):
         token = self.saveToken()
-        message = self.content(text)
+        message = self.makeMessage(text)
         submiturl = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}'.format(token)
         data = {"touser": wechatids, "msgtype": "text", "agentid": "1000002", "text": {"content": message}, "safe": "0"}
         data = json.dumps(data, ensure_ascii=False)
@@ -62,23 +63,27 @@ class WeChat(object):
         response = json.loads(urllib2.urlopen(send_request).read())
 
         if response['errcode'] == 42001 or response['errcode'] == 40014:
-            self.setMessage(wechatids, message)
+            self.logger.info("Send wechat errorcode : %s" % response['errcode'])
+            os.remove(self.tokenpath)
+            self.setMessage(wechatids, text)
 
-    def content(self, content):
+    def makeMessage(self, text):
         def date():
             date = time.strftime('%m-%d %H:%M:%S', time.localtime())
             return date
 
-        return "%s \nCall Time:%s" % (content, date())
+        return "%s \nCall Time:%s" % (text, date())
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings('ignore')
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
 
-    wechatClient = WeChat('xxxxxxxxxx', 'xxxxxxxxxxxxxxxx', '/tmp/token.txt')
-    userid = "HuShiWei"
-    text = "123456777"
+    wechatClient = WeChat('xxxxxxxxxxxx', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', '/tmp/token.txt')
+
+    userid = sys.argv[1]
+    text = sys.argv[2]
 
     wechatClient.setMessage(userid, text)
