@@ -62,8 +62,7 @@ class WeChat(object):
         response = json.loads(urllib2.urlopen(send_request).read())
 
         if response['errcode'] == 42001 or response['errcode'] == 40014:
-            token = self.getToken()
-            self.setMessage(wechatids, message, token)
+            self.setMessage(wechatids, message)
 
     def content(self, content):
         def date():
@@ -78,7 +77,7 @@ if __name__ == '__main__':
                         format='%(asctime)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
 
-    wechatClient = WeChat('xxxxx', 'xxxxxxxxxxxxxxxxxx', '/tmp/token.txt')
+    wechatClient = WeChat('ww9434b354fe08273a', 'YYuhIM19qDRnOyzb3nBBCp2Nx2NS0TsVjHUPJfBuukY', '/tmp/token.txt')
     userid = "HuShiWei"
     text = "123456777"
 

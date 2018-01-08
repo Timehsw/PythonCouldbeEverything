@@ -17,7 +17,7 @@ from email.mime.multipart import MIMEMultipart
 from email.header import Header
 
 wechats = "HuShiwei"
-sendEmails = ['hsw_v5@163.com', 'hushiwei@gm825.com']
+sendEmails = ['hsw_v5@163.com', 'xxxx@gm825.com']
 
 urlRun = 'curl --compressed -H "Accept: application/json" -X GET "http://u007:8089/ws/v1/cluster/apps?states=RUNNING"'
 urlAcc = 'curl --compressed -H "Accept: application/json" -X GET "http://u007:8089/ws/v1/cluster/apps?states=ACCEPTED"'
@@ -73,7 +73,7 @@ class WeChat(object):
 
     def setMessage(self, wechatids, text):
         token = self.saveToken()
-        message = self.content(text)
+        message = self.makeMessage(text)
         submiturl = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}'.format(token)
         data = {"touser": wechatids, "msgtype": "text", "agentid": "1000002", "text": {"content": message}, "safe": "0"}
         data = json.dumps(data, ensure_ascii=False)
@@ -85,14 +85,16 @@ class WeChat(object):
         response = json.loads(urllib2.urlopen(send_request).read())
 
         if response['errcode'] == 42001 or response['errcode'] == 40014:
-            self.setMessage(wechatids, message)
+            self.logger.info("Send wechat errorcode : %s" % response['errcode'])
+            os.remove(self.tokenpath)
+            self.setMessage(wechatids, text)
 
-    def content(self, content):
+    def makeMessage(self, text):
         def date():
             date = time.strftime('%m-%d %H:%M:%S', time.localtime())
             return date
 
-        return "%s \nCall Time:%s" % (content, date())
+        return "%s \nCall Time:%s" % (text, date())
 
 
 class Message(object):
@@ -242,7 +244,7 @@ def checkMonitorApps():
     logger = logging.getLogger("Main")
 
     smpt_client = SMTPClient('smtp.qq.com', 465, '694244330@qq.com', 'xxxxxx')
-    wechat_client = WeChat('xxxxx', 'xxxxxxxxxxx', '/tmp/token.txt')
+    wechat_client = WeChat('xxxxxxxxxxxxxx', 'xxxxxxxxxxxxxxxxxxxxxxxxx', '/tmp/token.txt')
 
     runningStatus = collectMonitorStatus(urlRun)
     acceptStatus = collectMonitorStatus(urlAcc)
@@ -255,7 +257,7 @@ def checkMonitorApps():
         if monitor not in runningAcceptApps:
             logging.info("[ %s ] is not running or accept,prepare to restart!" % monitor)
             msg = Message("694244330@qq.com", "hushwiei", monitor, '%s is failed, prepare to resart! -- %s' % (
-            monitor, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
+                monitor, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
             smpt_client.send(sendEmails, msg)
             wechat_client.setMessage(wechats, "%s is not running or accept,prepare to restart!" % monitor)
             reStartSparkScript(monitorPrograms[monitor])

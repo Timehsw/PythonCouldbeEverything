@@ -10,7 +10,7 @@ import sys
 import MySQLdb
 from PySpark.sql import SQLContext
 
-from PythonSkills.Email import MIMEText
+from PythonTools.Email import MIMEText
 from PySpark import SparkConf, SparkContext
 
 reload(sys)
