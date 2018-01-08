@@ -77,7 +77,7 @@ if __name__ == '__main__':
                         format='%(asctime)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
 
-    wechatClient = WeChat('ww9434b354fe08273a', 'YYuhIM19qDRnOyzb3nBBCp2Nx2NS0TsVjHUPJfBuukY', '/tmp/token.txt')
+    wechatClient = WeChat('xxxxxxxxxx', 'xxxxxxxxxxxxxxxx', '/tmp/token.txt')
     userid = "HuShiWei"
     text = "123456777"
 
