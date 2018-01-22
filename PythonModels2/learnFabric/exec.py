@@ -9,7 +9,7 @@ from fabric.colors import green
 
 env.hosts=['10.10.25.13']
 env.user='root'
-env.password='Wankahuanju!@#'
+env.password='xxxxxxxxx'
 local_path="~/demo"
 remote_path="~/hsw/"
 remote_dir_bak = "/home/root/statistics/auto_deploy_bak/"
